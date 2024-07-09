@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./finance-api
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./finance-api/.env.prod
+    volumes:
+      - ./finance-api:/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./finances-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./finances-app/.env.prod
+    volumes:
+      - ./finances-app:/app
+    environment:
+      - NODE_ENV=development
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
